@@ -16,6 +16,36 @@ namespace Linkly.Controllers
             _service = service;
         }
 
+       
+        [HttpGet("/info/{slug}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<SlugInfoResponse>> SlugInfo(string slug) {
+            try {
+                Link fetchedSlug = await _service.GetBySlug(slug);
+                return Ok(
+                    new SlugInfoResponse
+                    {
+                        Url = fetchedSlug.Url
+                    }
+                );
+            }
+            catch (NullReferenceException)
+            {
+                // This is temporary, not sure of what to do in this case.
+                return BadRequest(new ErrorResponse(400, "The slug entered does not exist."));
+            }
+            catch
+            {
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new ErrorResponse(500, "An error has occured, please try again later.")
+                );
+            }
+        }
+
         [HttpPost("api/generate")]
         [Consumes("application/json")]
         [Produces("application/json")]
@@ -45,7 +75,7 @@ namespace Linkly.Controllers
             {
                 return StatusCode(
                     StatusCodes.Status500InternalServerError,
-                    new ErrorResponse(400, "An error has occured, please try again later.")
+                    new ErrorResponse(500, "An error has occured, please try again later.")
                 );
             }
 

@@ -5,7 +5,8 @@ namespace Linkly.Models
         public int Status { get; set; }
         public string Error { get; set; }
 
-        public ErrorResponse(int status, string error) {
+        public ErrorResponse(int status, string error)
+        {
             Status = status;
             Error = error;
         }

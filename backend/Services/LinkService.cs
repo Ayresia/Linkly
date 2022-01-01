@@ -11,6 +11,12 @@ namespace Linkly.Services
             _context = context;
         }
 
+        public async Task<Link> GetBySlug(string slug)
+        {
+            Link fetchedLink = await _context.Links.FindAsync(slug);
+            return fetchedLink;
+        }
+
         public async Task CreateSlugAsync(string slug, string url)
         {
             await _context.Links.AddAsync(new Link
