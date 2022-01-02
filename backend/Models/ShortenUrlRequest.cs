@@ -1,6 +1,6 @@
 namespace Linkly.Models 
 {
-    public class GenerateSlugRequest 
+    public class ShortenUrlRequest 
     {
         public string Url { get; set; }
     }

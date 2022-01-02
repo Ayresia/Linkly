@@ -48,13 +48,13 @@ namespace Linkly.Controllers
             }
         }
 
-        [HttpPost("api/generate")]
+        [HttpPost("api/shorten")]
         [Consumes("application/json")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<GenerateSlugResponse>> GenerateSlug(GenerateSlugRequest req)
+        public async Task<ActionResult<ShortenUrlResponse>> ShortenUrl(ShortenUrlRequest req)
         {
             if (String.IsNullOrEmpty(req.Url))
                 return BadRequest(new ErrorResponse(400, "Provide a valid URL."));
@@ -85,7 +85,7 @@ namespace Linkly.Controllers
             return StatusCode
             (
                 StatusCodes.Status201Created,
-                new GenerateSlugResponse 
+                new ShortenUrlResponse
                 { 
                     Slug = generatedSlug 
                 }
