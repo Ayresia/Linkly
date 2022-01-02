@@ -1,8 +1,8 @@
-using Linkly.Models;
-using Linkly.Services;
+using Linkly.Api.Models;
+using Linkly.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Linkly.Controllers
+namespace Linkly.Api.Controllers
 {
     [Route("api/")]
     [ApiController]

@@ -1,4 +1,4 @@
-namespace Linkly.Models
+namespace Linkly.Api.Models
 {
     public class SlugInfoResponse
     {

@@ -1,5 +1,5 @@
-using Linkly.Models;
-using Linkly.Services;
+using Linkly.Api.Models;
+using Linkly.Api.Services;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +27,8 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var linkContext = services.GetService<LinkContext>();
 
-    if (linkContext != null) linkContext.Database.EnsureCreated();
+    if (linkContext != null)
+        linkContext.Database.EnsureCreated();
 }
 
 // Configure the HTTP request pipeline.

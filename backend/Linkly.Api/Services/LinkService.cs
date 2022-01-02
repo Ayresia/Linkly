@@ -1,6 +1,6 @@
-using Linkly.Models;
+using Linkly.Api.Models;
 
-namespace Linkly.Services
+namespace Linkly.Api.Services
 {
     public class LinkService
     {

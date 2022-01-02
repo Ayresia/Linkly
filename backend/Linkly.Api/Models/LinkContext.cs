@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace Linkly.Models 
+namespace Linkly.Api.Models 
 {
     public class LinkContext : DbContext 
     {
