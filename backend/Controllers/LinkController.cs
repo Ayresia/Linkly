@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Linkly.Controllers
 {
+    [Route("api/")]
     [ApiController]
     public class LinkController : ControllerBase
     {
@@ -17,7 +18,7 @@ namespace Linkly.Controllers
         }
 
        
-        [HttpGet("/info/{slug}")]
+        [HttpGet("info/{slug}")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -48,7 +49,7 @@ namespace Linkly.Controllers
             }
         }
 
-        [HttpPost("api/shorten")]
+        [HttpPost("shorten")]
         [Consumes("application/json")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
