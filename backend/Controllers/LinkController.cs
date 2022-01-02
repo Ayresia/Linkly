@@ -22,8 +22,10 @@ namespace Linkly.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<SlugInfoResponse>> SlugInfo(string slug) {
-            try {
+        public async Task<ActionResult<SlugInfoResponse>> SlugInfo(string slug)
+        {
+            try 
+            {
                 Link fetchedSlug = await _service.GetBySlug(slug);
                 return Ok(
                     new SlugInfoResponse
@@ -34,12 +36,12 @@ namespace Linkly.Controllers
             }
             catch (NullReferenceException)
             {
-                // This is temporary, not sure of what to do in this case.
                 return BadRequest(new ErrorResponse(400, "The slug entered does not exist."));
             }
             catch
             {
-                return StatusCode(
+                return StatusCode
+                (
                     StatusCodes.Status500InternalServerError,
                     new ErrorResponse(500, "An error has occured, please try again later.")
                 );
@@ -73,14 +75,16 @@ namespace Linkly.Controllers
             }
             catch
             {
-                return StatusCode(
+                return StatusCode
+                (
                     StatusCodes.Status500InternalServerError,
                     new ErrorResponse(500, "An error has occured, please try again later.")
                 );
             }
 
-            return CreatedAtAction(
-                nameof(GenerateSlug),
+            return StatusCode
+            (
+                StatusCodes.Status201Created,
                 new GenerateSlugResponse 
                 { 
                     Slug = generatedSlug 
