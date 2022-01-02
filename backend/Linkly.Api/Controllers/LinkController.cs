@@ -1,5 +1,5 @@
 using Linkly.Api.Models;
-using Linkly.Api.Services;
+using Linkly.Api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Linkly.Api.Controllers
@@ -9,9 +9,9 @@ namespace Linkly.Api.Controllers
     public class LinkController : ControllerBase
     {
         private readonly ILogger<LinkController> _logger;
-        private LinkService _service;
+        private ILinkService _service;
 
-        public LinkController(ILogger<LinkController> logger, LinkService service)
+        public LinkController(ILogger<LinkController> logger, ILinkService service)
         {
             _logger = logger;
             _service = service;
@@ -27,7 +27,7 @@ namespace Linkly.Api.Controllers
         {
             try 
             {
-                Link fetchedSlug = await _service.GetBySlug(slug);
+                Link fetchedSlug = await _service.GetBySlugAsync(slug);
                 return Ok(
                     new SlugInfoResponse
                     {
@@ -60,11 +60,11 @@ namespace Linkly.Api.Controllers
             if (String.IsNullOrEmpty(req.Url))
                 return BadRequest(new ErrorResponse(400, "Provide a valid URL."));
 
+            if (!_service.IsUrlValid(req.Url))
+                return BadRequest(new ErrorResponse(400, "Provide a valid URL."));
+
             if (!req.Url.StartsWith("https://") && !req.Url.StartsWith("http://"))
                 req.Url = $"http://{req.Url}";
-
-            if (!Uri.IsWellFormedUriString(req.Url, UriKind.Absolute))
-                return BadRequest(new ErrorResponse(400, "Provide a valid URL."));
 
             Uri uri = new Uri(req.Url);
             string sanitizedUrl = uri.GetLeftPart(UriPartial.Path);

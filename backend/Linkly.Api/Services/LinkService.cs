@@ -1,8 +1,10 @@
+using System.Text.RegularExpressions;
+using Linkly.Api.Interfaces;
 using Linkly.Api.Models;
 
 namespace Linkly.Api.Services
 {
-    public class LinkService
+    public class LinkService : ILinkService
     {
         private LinkContext _context;
 
@@ -11,10 +13,18 @@ namespace Linkly.Api.Services
             _context = context;
         }
 
-        public async Task<Link> GetBySlug(string slug)
+        public async Task<Link> GetBySlugAsync(string slug)
         {
             Link fetchedLink = await _context.Links.FindAsync(slug);
             return fetchedLink;
+        }
+
+        public bool IsUrlValid(string url)
+        {
+            string pattern = @"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$";
+
+            Regex rgx = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            return rgx.IsMatch(url);
         }
 
         public async Task CreateSlugAsync(string slug, string url)

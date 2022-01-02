@@ -1,3 +1,4 @@
+using Linkly.Api.Interfaces;
 using Linkly.Api.Models;
 using Linkly.Api.Services;
 using Microsoft.OpenApi.Models;
@@ -8,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<LinkContext>();
-builder.Services.AddScoped<LinkService>();
+builder.Services.AddScoped<ILinkService, LinkService>();
 builder.Services.AddSwaggerGen(options =>
     {
         options.SwaggerDoc("v1", new OpenApiInfo 
