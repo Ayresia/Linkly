@@ -19,7 +19,7 @@ namespace Linkly.Api.Services
             return fetchedLink;
         }
 
-        public bool IsUrlValid(string url)
+        public static bool IsUrlValid(string url)
         {
             string pattern = @"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$";
 

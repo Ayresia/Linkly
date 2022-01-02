@@ -1,6 +1,7 @@
 using Linkly.Api.Models;
 using Linkly.Api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Linkly.Api.Services;
 
 namespace Linkly.Api.Controllers
 {
@@ -60,7 +61,7 @@ namespace Linkly.Api.Controllers
             if (String.IsNullOrEmpty(req.Url))
                 return BadRequest(new ErrorResponse(400, "Provide a valid URL."));
 
-            if (!_service.IsUrlValid(req.Url))
+            if (!LinkService.IsUrlValid(req.Url))
                 return BadRequest(new ErrorResponse(400, "Provide a valid URL."));
 
             if (!req.Url.StartsWith("https://") && !req.Url.StartsWith("http://"))
