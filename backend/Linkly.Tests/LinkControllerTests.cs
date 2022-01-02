@@ -7,8 +7,8 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 using Microsoft.AspNetCore.Http;
-using System.Text.RegularExpressions;
 using Linkly.Api.Services;
+using System;
 
 namespace Linkly.Tests
 {
@@ -27,7 +27,24 @@ namespace Linkly.Tests
             _logger = new Mock<ILogger<LinkController>>();
             _linkController = new LinkController(_logger.Object, _service.Object);
 
-            _service.Setup(s => s.CreateSlugAsync(MOCK_SLUG, MOCK_URL)).Returns(Task.FromResult(true));
+            _service.Setup(s => s.CreateSlugAsync(MOCK_SLUG, MOCK_URL))
+                .Returns(Task.FromResult(true));
+
+            var mockSlugInfo = new Link
+                {
+                    Slug = MOCK_SLUG,
+                    Url = MOCK_URL
+                };
+
+            _service.Setup(s => s.GetBySlugAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult(mockSlugInfo))
+                .Callback(
+                    (string slug) => 
+                    {
+                        if (slug != MOCK_SLUG)
+                            throw new NullReferenceException();
+                    }
+                );
         }
 
         [Fact]
@@ -54,6 +71,20 @@ namespace Linkly.Tests
             };
 
             var result = await _linkController.ShortenUrl(mockRequest);
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task SlugInfo_ValidSlug_ReturnSlugInfo()
+        {
+            var result = await _linkController.SlugInfo(MOCK_SLUG);
+            Assert.IsType<OkObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task SlugInfo_InvalidSlug_ReturnBadRequest()
+        {
+            var result = await _linkController.SlugInfo("example");
             Assert.IsType<BadRequestObjectResult>(result.Result);
         }
     }
