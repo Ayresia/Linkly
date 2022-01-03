@@ -10,13 +10,13 @@ namespace Linkly.Api.Services
 
         public LinkService(LinkContext context) => _context = context;
 
-        public async Task<Link> GetBySlugAsync(string slug)
+        public async virtual Task<Link> GetBySlugAsync(string slug)
         {
             Link fetchedLink = await _context.Links.FindAsync(slug);
             return fetchedLink;
         }
 
-        public static bool IsUrlValid(string url)
+        public bool IsUrlValid(string url)
         {
             string pattern = @"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$";
 
@@ -24,7 +24,7 @@ namespace Linkly.Api.Services
             return rgx.IsMatch(url);
         }
 
-        public async Task CreateSlugAsync(string slug, string url)
+        public async virtual Task CreateSlugAsync(string slug, string url)
         {
             await _context.Links.AddAsync(new Link
                 {
@@ -36,7 +36,7 @@ namespace Linkly.Api.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<string> CreateUniqueSlugAsync(string url)
+        public async virtual Task<string> CreateUniqueSlugAsync(string url)
         {
             string generatedSlug = GenerateSlug();
             var queryResult = _context.Links

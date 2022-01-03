@@ -8,27 +8,31 @@ using Xunit;
 using Microsoft.AspNetCore.Http;
 using Linkly.Api.Services;
 using System;
-using Linkly.Api.Interfaces;
 
 namespace Linkly.Tests
 {
     public class LinkControllerTests
     {
-        public const string MOCK_SLUG = "mSlug";
-        public const string MOCK_URL = "https://youtube.com/watch?=ddskjalj";
+        public const string MOCK_SLUG = "mslug";
+        public const string MOCK_URL = "https://examplesite.com";
 
-        private readonly Mock<ILinkService> _service;
+        private readonly LinkContext _context;
+        private readonly Mock<LinkService> _service;
         private readonly Mock<ILogger<LinkController>> _logger;
         private readonly LinkController _linkController;
 
         public LinkControllerTests()
         {
-            _service = new Mock<ILinkService>();
+            _context = new LinkContext();
+            _service = new Mock<LinkService>(_context);
             _logger = new Mock<ILogger<LinkController>>();
             _linkController = new LinkController(_logger.Object, _service.Object);
 
             _service.Setup(s => s.CreateSlugAsync(MOCK_SLUG, MOCK_URL))
                 .Returns(Task.FromResult(true));
+
+            _service.Setup(s => s.CreateUniqueSlugAsync(MOCK_URL))
+                .Returns(Task.FromResult(MOCK_SLUG));
 
             var mockSlugInfo = new Link
             {

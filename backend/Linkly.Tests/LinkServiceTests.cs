@@ -9,8 +9,8 @@ namespace Linkly.Tests
 {
     public class LinkServiceTests 
     {
-        public const string MOCK_SLUG = "mSlug";
-        public const string MOCK_URL = "https://youtube.com/watch?=ddskjalj";
+        public const string MOCK_SLUG = "mslug";
+        public const string MOCK_URL = "https://examplesite.com";
 
         private readonly Mock<LinkContext> _context;
         private readonly LinkService _service;
@@ -50,6 +50,20 @@ namespace Linkly.Tests
         {
             var result = await _service.GetBySlugAsync("example");
             Assert.IsNotType<Link>(result);
+        }
+
+        [Fact]
+        public async Task IsUrlValid_ValidUrl_ReturnTrue()
+        {
+            var result = _service.IsUrlValid(MOCK_URL);
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task IsUrlValid_InvalidUrl_ReturnFalse()
+        {
+            var result = _service.IsUrlValid("example site.com");
+            Assert.False(result);
         }
     }
 }
