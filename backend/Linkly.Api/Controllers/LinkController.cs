@@ -1,7 +1,7 @@
 using Linkly.Api.Models;
-using Linkly.Api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Linkly.Api.Services;
+using Linkly.Api.Interfaces;
 
 namespace Linkly.Api.Controllers
 {

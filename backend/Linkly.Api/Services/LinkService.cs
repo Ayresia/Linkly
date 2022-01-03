@@ -8,10 +8,7 @@ namespace Linkly.Api.Services
     {
         private LinkContext _context;
 
-        public LinkService(LinkContext context)
-        {
-            _context = context;
-        }
+        public LinkService(LinkContext context) => _context = context;
 
         public async Task<Link> GetBySlugAsync(string slug)
         {

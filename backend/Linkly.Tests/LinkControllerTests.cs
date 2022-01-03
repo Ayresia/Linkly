@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Linkly.Api.Controllers;
 using Linkly.Api.Models;
-using Linkly.Api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -9,6 +8,7 @@ using Xunit;
 using Microsoft.AspNetCore.Http;
 using Linkly.Api.Services;
 using System;
+using Linkly.Api.Interfaces;
 
 namespace Linkly.Tests
 {
@@ -31,10 +31,10 @@ namespace Linkly.Tests
                 .Returns(Task.FromResult(true));
 
             var mockSlugInfo = new Link
-                {
-                    Slug = MOCK_SLUG,
-                    Url = MOCK_URL
-                };
+            {
+                Slug = MOCK_SLUG,
+                Url = MOCK_URL
+            };
 
             _service.Setup(s => s.GetBySlugAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(mockSlugInfo))
