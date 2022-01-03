@@ -65,5 +65,12 @@ namespace Linkly.Tests
             var result = _service.IsUrlValid("example site.com");
             Assert.False(result);
         }
+
+        [Fact]
+        public async Task GenerateSlug_ReturnFiveChar()
+        {
+            var result = _service.GenerateSlug();
+            Assert.True(result.Length == 5);
+        }
     }
 }
