@@ -59,6 +59,9 @@ namespace Linkly.Api.Controllers
             if (String.IsNullOrEmpty(req.Url))
                 return BadRequest(new ErrorResponse(400, "Provide a valid URL."));
 
+            if (req.Url.Length > 2048)
+                return BadRequest(new ErrorResponse(400, "The URL length must be less than 2048."));
+
             if (!_service.IsUrlValid(req.Url))
                 return BadRequest(new ErrorResponse(400, "Provide a valid URL."));
 
