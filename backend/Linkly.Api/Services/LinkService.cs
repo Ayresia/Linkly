@@ -39,6 +39,20 @@ namespace Linkly.Api.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task<string> CreateUniqueSlugAsync(string url)
+        {
+            string generatedSlug = GenerateSlug();
+            var queryResult = _context.Links
+                .Where(l => l.Slug == generatedSlug)
+                .FirstOrDefault();
+
+            if (queryResult != null)
+                return await CreateUniqueSlugAsync(url);
+
+            await CreateSlugAsync(generatedSlug, url);
+            return generatedSlug;
+        }
+
         public string GenerateSlug()
         {
             Random random = new Random();

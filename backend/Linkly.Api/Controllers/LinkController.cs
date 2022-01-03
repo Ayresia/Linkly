@@ -69,11 +69,11 @@ namespace Linkly.Api.Controllers
 
             Uri uri = new Uri(req.Url);
             string sanitizedUrl = uri.GetLeftPart(UriPartial.Path);
-            string generatedSlug = _service.GenerateSlug();
+            string generatedSlug;
 
             try 
             {
-                await _service.CreateSlugAsync(generatedSlug, sanitizedUrl);
+                generatedSlug = await _service.CreateUniqueSlugAsync(sanitizedUrl);
             }
             catch
             {
@@ -89,7 +89,7 @@ namespace Linkly.Api.Controllers
                 StatusCodes.Status201Created,
                 new ShortenUrlResponse
                 { 
-                    Slug = generatedSlug 
+                    Slug = generatedSlug
                 }
             );
         }
