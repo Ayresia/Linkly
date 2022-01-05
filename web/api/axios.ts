@@ -1,6 +1,5 @@
 import https from 'https';
 import axios from 'axios';
-import { ErrorResponse } from '@types';
 
 const httpsAgent = new https.Agent({
     rejectUnauthorized: process.env.NODE_ENV == 'development' ? false : true
@@ -16,14 +15,14 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use((request) =>
    request,
    async (error) => {
-       return Promise.reject(error.response.data)
+       return Promise.reject(error.response)
    },
 );
 
 axiosInstance.interceptors.response.use((response) =>
    response,
    async (error) => {
-       return Promise.reject(error.response.data)
+       return Promise.reject(error.response)
    },
 );
 

@@ -1,27 +1,45 @@
 import Button from '@components/button';
 import ErrorMessage from '@components/errormessage';
 import InputBox from '@components/inputbox';
+import LinkPreview from '@components/linkpreview';
+import { shortenUrl } from 'api/services/link';
 import { Dispatch, MouseEvent, SetStateAction, useState } from 'react';
 
-export const onClicked = (event: MouseEvent<HTMLButtonElement>, setError: Dispatch<SetStateAction<string>>, url: string) => {
+export const onClicked = async (event: MouseEvent<HTMLButtonElement>, setError: Dispatch<SetStateAction<string>>, setSlug: Dispatch<SetStateAction<string>>, url: string) => {
     event.preventDefault();
 
     if (url.trim().length == 0) {
         setError("Enter a valid URL");
-        return
+        return;
     }
 
     let pattern = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
 
     if (!url.match(pattern)) {
         setError("Enter a valid URL");
-        return
+        return;
+    }
+
+    try {
+        let resp = await shortenUrl(url);
+        setSlug(`${location.href}${resp.slug}`);
+    } catch (e) {
+        if (e == undefined) {
+            setError("Internal server error");
+            return;
+        }
+
+        if (e.data.trim().length == 0) {
+            setError("Internal server error");
+            return;
+        }
     }
 };
 
 export default function Index() {
     const [url, setURL] = useState<string>("");
-    const [error, setError] = useState<string>();
+    const [error, setError] = useState<string>("");
+    const [slug, setSlug] = useState<string>();
 
     return (
         <div className="h-full flex flex-col justify-center mx-auto w-82 sm:w-[500px] gap-[25px]">
@@ -36,10 +54,11 @@ export default function Index() {
                         placeholder="https://example.com"
                     />
                     <Button
-                        onClick={(e: MouseEvent<HTMLButtonElement>) => onClicked(e, setError, url)}
+                        onClick={(e: MouseEvent<HTMLButtonElement>) => onClicked(e, setError, setSlug, url)}
                         className="rounded-[25px] sm:rounded-none sm:rounded-tr-[25px] sm:rounded-br-[25px]">Shorten
                     </Button>
                 </div>
+                { slug && <LinkPreview link={slug} /> }
                 { error && <ErrorMessage error={error} setError={setError} /> }
         </div>
     )
