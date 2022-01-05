@@ -30,3 +30,7 @@ body {
 .button-shadow {
     box-shadow: 0px 0px 15px -1px rgba(15, 83, 250, 0.5);
 }
+
+.error-shadow {
+    box-shadow: 0px 0px 17px -3px rgba(251, 92, 142, 0.5);
+}
