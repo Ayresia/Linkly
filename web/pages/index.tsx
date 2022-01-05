@@ -1,6 +1,5 @@
-import Button from '../components/button';
-import InputBox from '../components/inputbox';
-import LinkPreview from '../components/linkpreview';
+import Button from '@components/button';
+import InputBox from '@components/inputbox';
 
 export default function Index() {
     return (
