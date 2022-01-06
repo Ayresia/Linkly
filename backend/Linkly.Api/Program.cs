@@ -3,13 +3,24 @@ using Linkly.Api.Models;
 using Linkly.Api.Services;
 using Microsoft.OpenApi.Models;
 
+var originPolicy = "_origins";
 var builder = WebApplication.CreateBuilder(args);
+
+WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<LinkContext>();
 builder.Services.AddScoped<ILinkService, LinkService>();
+builder.Services.AddCors(options =>
+    {
+        options.AddPolicy(
+            name: originPolicy,
+            builder => { builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); }
+        );
+    }
+);
 builder.Services.AddSwaggerGen(options =>
     {
         options.SwaggerDoc("v1", new OpenApiInfo 
@@ -40,6 +51,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors(originPolicy);
 app.UseAuthorization();
 app.MapControllers();
 
