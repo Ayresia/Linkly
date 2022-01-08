@@ -1,4 +1,4 @@
-import { getSlugInfo } from "api/services/link";
+import { getSlugInfo } from "@api/services/link";
 
 export async function getServerSideProps(ctx) {
     let res = {

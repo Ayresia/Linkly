@@ -2,7 +2,7 @@ import Button from '@components/button';
 import ErrorMessage from '@components/errormessage';
 import InputBox from '@components/inputbox';
 import LinkPreview from '@components/linkpreview';
-import { shortenUrl } from 'api/services/link';
+import { shortenUrl } from '@api/services/link';
 import { Dispatch, MouseEvent, SetStateAction, useState } from 'react';
 
 export const onClicked = async (event: MouseEvent<HTMLButtonElement>, setError: Dispatch<SetStateAction<string>>, setSlug: Dispatch<SetStateAction<string>>, url: string) => {
