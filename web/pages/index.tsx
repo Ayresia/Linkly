@@ -22,14 +22,11 @@ export const onClicked = async (event: MouseEvent<HTMLButtonElement>, setError: 
 
     try {
         let resp = await shortenUrl(url);
+
+        setError("")
         setSlug(`${location.href}${resp.slug}`);
     } catch (e) {
-        if (e == undefined) {
-            setError("Internal server error");
-            return;
-        }
-
-        if (e.data.trim().length == 0) {
+        if (e == undefined || e.data.trim().length == 0) {
             setError("Internal server error");
             return;
         }
