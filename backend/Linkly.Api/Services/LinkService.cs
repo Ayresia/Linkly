@@ -26,8 +26,10 @@ namespace Linkly.Api.Services
                 Link? fetchedLink = await _context.Links.FindAsync(slug);
 
                 if (fetchedLink != null)
+                    await redisDB.StringSetAsync($"links:{fetchedLink.Slug}", fetchedLink.Url, TimeSpan.FromMinutes(5));
                     return fetchedLink;
             }
+
 
             return new Link()
             {
@@ -56,7 +58,7 @@ namespace Linkly.Api.Services
             await _context.SaveChangesAsync();
 
             var redisDB = _redis.GetDatabase();
-            var redisRes = await redisDB.StringSetAsync($"links:{slug}", url);
+            await redisDB.StringSetAsync($"links:{slug}", url, TimeSpan.FromMinutes(5));
         }
 
         public async virtual Task<string> CreateUniqueSlugAsync(string url)
