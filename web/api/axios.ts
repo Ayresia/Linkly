@@ -1,12 +1,15 @@
 import https from 'https';
 import axios from 'axios';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
 
 const httpsAgent = new https.Agent({
     rejectUnauthorized: process.env.NODE_ENV == 'development' ? false : true
 });
 
 const axiosInstance = axios.create({
-    baseURL: "https://localhost:7057/api",
+    baseURL: publicRuntimeConfig.backendURL,
     timeout: 1000,
     headers: { 'Content-Type': 'application/json' },
     httpsAgent: httpsAgent
