@@ -1,19 +1,37 @@
 using System.Text.RegularExpressions;
 using Linkly.Api.Interfaces;
 using Linkly.Api.Models;
+using StackExchange.Redis;
 
 namespace Linkly.Api.Services
 {
     public class LinkService : ILinkService
     {
         private LinkContext _context;
+        private IConnectionMultiplexer _redis;
 
-        public LinkService(LinkContext context) => _context = context;
+        public LinkService(LinkContext context, IConnectionMultiplexer redis)
+        {
+            _context = context;
+            _redis = redis;
+        }
 
         public async virtual Task<Link> GetBySlugAsync(string slug)
         {
-            Link fetchedLink = await _context.Links.FindAsync(slug);
-            return fetchedLink;
+            var redisDB = _redis.GetDatabase();
+            var redisRes = await redisDB.StringGetAsync($"links:{slug}");
+
+            if (redisRes.IsNullOrEmpty)
+            {
+                Link fetchedLink = await _context.Links.FindAsync(slug);
+                return fetchedLink;
+            }
+
+            return new Link()
+            {
+                Slug = slug,
+                Url = redisRes.ToString()
+            };
         }
 
         public bool IsUrlValid(string url)
@@ -34,6 +52,9 @@ namespace Linkly.Api.Services
             );
 
             await _context.SaveChangesAsync();
+
+            var redisDB = _redis.GetDatabase();
+            var redisRes = await redisDB.StringSetAsync($"links:{slug}", url);
         }
 
         public async virtual Task<string> CreateUniqueSlugAsync(string url)

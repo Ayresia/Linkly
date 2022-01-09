@@ -8,6 +8,7 @@ using Xunit;
 using Microsoft.AspNetCore.Http;
 using Linkly.Api.Services;
 using System;
+using StackExchange.Redis;
 
 namespace Linkly.Tests
 {
@@ -17,6 +18,8 @@ namespace Linkly.Tests
         public const string MOCK_URL = "https://examplesite.com";
 
         private readonly LinkContext _context;
+        private readonly Mock<IConnectionMultiplexer> _redis;
+        private readonly Mock<IDatabase> _redisDatabase;
         private readonly Mock<LinkService> _service;
         private readonly Mock<ILogger<LinkController>> _logger;
         private readonly LinkController _linkController;
@@ -24,9 +27,25 @@ namespace Linkly.Tests
         public LinkControllerTests()
         {
             _context = new LinkContext();
-            _service = new Mock<LinkService>(_context);
+            _redis = new Mock<IConnectionMultiplexer>();
+            _redisDatabase = new Mock<IDatabase>();
+            _service = new Mock<LinkService>(_context, _redis.Object);
             _logger = new Mock<ILogger<LinkController>>();
             _linkController = new LinkController(_logger.Object, _service.Object);
+
+            _redis.Setup(r => r.GetDatabase(It.IsAny<int>(), It.IsAny<object>()))
+                .Returns(_redisDatabase.Object);
+            
+            _redisDatabase.Setup(rd => rd.StringGetAsync(It.IsAny<RedisKey>(), It.IsAny<CommandFlags>()))
+                .ReturnsAsync(
+                    (RedisKey key, CommandFlags flags) =>
+                    {
+                        if (key != MOCK_SLUG)
+                            return new RedisValue(null);
+
+                        return MOCK_SLUG;
+                    }
+                );
 
             _service.Setup(s => s.CreateSlugAsync(MOCK_SLUG, MOCK_URL))
                 .Returns(Task.FromResult(true));

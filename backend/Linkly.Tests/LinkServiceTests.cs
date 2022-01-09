@@ -4,6 +4,7 @@ using Xunit;
 using Linkly.Api.Services;
 using Linkly.Api.Models;
 using System;
+using StackExchange.Redis;
 
 namespace Linkly.Tests
 {
@@ -13,18 +14,36 @@ namespace Linkly.Tests
         public const string MOCK_URL = "https://examplesite.com";
 
         private readonly Mock<LinkContext> _context;
+        private readonly Mock<IConnectionMultiplexer> _redis;
+        private readonly Mock<IDatabase> _redisDatabase;
         private readonly LinkService _service;
 
         public LinkServiceTests()
         {
             _context = new Mock<LinkContext>();
-            _service = new LinkService(_context.Object);
+            _redis = new Mock<IConnectionMultiplexer>();
+            _redisDatabase = new Mock<IDatabase>();
+            _service = new LinkService(_context.Object, _redis.Object);
 
             var mockSlugInfo = new Link
             {
                 Slug = MOCK_SLUG,
                 Url = MOCK_URL
             };
+
+            _redis.Setup(r => r.GetDatabase(It.IsAny<int>(), It.IsAny<object>()))
+                .Returns(_redisDatabase.Object);
+            
+            _redisDatabase.Setup(rd => rd.StringGetAsync(It.IsAny<RedisKey>(), It.IsAny<CommandFlags>()))
+                .ReturnsAsync(
+                    (RedisKey key, CommandFlags flags) =>
+                    {
+                        if (key != MOCK_SLUG)
+                            return new RedisValue(null);
+
+                        return MOCK_SLUG;
+                    }
+                );
 
             _context.Setup(c => c.Links.FindAsync(It.IsAny<String>()))
                 .ReturnsAsync(
@@ -53,21 +72,21 @@ namespace Linkly.Tests
         }
 
         [Fact]
-        public async Task IsUrlValid_ValidUrl_ReturnTrue()
+        public void IsUrlValid_ValidUrl_ReturnTrue()
         {
             var result = _service.IsUrlValid(MOCK_URL);
             Assert.True(result);
         }
 
         [Fact]
-        public async Task IsUrlValid_InvalidUrl_ReturnFalse()
+        public void IsUrlValid_InvalidUrl_ReturnFalse()
         {
             var result = _service.IsUrlValid("example site.com");
             Assert.False(result);
         }
 
         [Fact]
-        public async Task GenerateSlug_ReturnFiveChar()
+        public void GenerateSlug_ReturnFiveChar()
         {
             var result = _service.GenerateSlug();
             Assert.True(result.Length == 5);

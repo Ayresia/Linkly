@@ -26,7 +26,6 @@ namespace Linkly.Api.Controllers
         {
             try 
             {
-
             if (slug.Length != 5)
                 return BadRequest(new ErrorResponse(400, "Provide a valid slug."));
 
