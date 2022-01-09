@@ -23,8 +23,10 @@ namespace Linkly.Api.Services
 
             if (redisRes.IsNullOrEmpty)
             {
-                Link fetchedLink = await _context.Links.FindAsync(slug);
-                return fetchedLink;
+                Link? fetchedLink = await _context.Links.FindAsync(slug);
+
+                if (fetchedLink != null)
+                    return fetchedLink;
             }
 
             return new Link()

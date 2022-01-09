@@ -1,11 +1,10 @@
-using Linkly.Api.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Linkly.Api.Models 
 {
     public class LinkContext : DbContext
     {
-        public virtual DbSet<Link> Links { get; set; }
+        public virtual DbSet<Link> Links { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
