@@ -38,6 +38,36 @@ namespace Linkly.Api.Services
             };
         }
 
+        public virtual Link? GetByUrl(string url)
+        {
+            Link? fetchedLink = _context.Links
+                .Where(l => l.Url == url)
+                .FirstOrDefault();
+
+            if (fetchedLink == null)
+                return null;
+
+            return new Link()
+            {
+                Slug = fetchedLink.Slug,
+                Url = fetchedLink.Url
+            };
+        }
+
+        public string SanitizeUrl(string url)
+        {
+            if (!url.StartsWith("https://") && !url.StartsWith("http://"))
+                url = $"https://{url}";
+
+            if (url.StartsWith("http://"))
+                url = url.Replace("http://", "https://");
+
+            if (url.Contains("www."))
+                url = url.Replace("www.", string.Empty);
+
+            return url;
+        }
+
         public bool IsUrlValid(string url)
         {
             string pattern = @"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$";

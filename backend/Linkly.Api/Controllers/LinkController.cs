@@ -26,8 +26,8 @@ namespace Linkly.Api.Controllers
         {
             try 
             {
-            if (slug.Length != 5)
-                return BadRequest(new ErrorResponse(400, "Provide a valid slug."));
+                if (slug.Length != 5)
+                    return BadRequest(new ErrorResponse(400, "Provide a valid slug."));
 
                 Link fetchedSlug = await _service.GetBySlugAsync(slug);
                 
@@ -69,16 +69,19 @@ namespace Linkly.Api.Controllers
             if (!_service.IsUrlValid(req.Url))
                 return BadRequest(new ErrorResponse(400, "Provide a valid URL."));
 
-            if (!req.Url.StartsWith("https://") && !req.Url.StartsWith("http://"))
-                req.Url = $"http://{req.Url}";
 
-            Uri uri = new Uri(req.Url);
-            string sanitizedUrl = uri.GetLeftPart(UriPartial.Path);
+            string sanitizedUrl = _service.SanitizeUrl(req.Url);
             string generatedSlug;
 
             try 
             {
-                generatedSlug = await _service.CreateUniqueSlugAsync(sanitizedUrl);
+                var fetchedLink = _service.GetByUrl(sanitizedUrl);
+
+                if (fetchedLink == null) {
+                    generatedSlug = await _service.CreateUniqueSlugAsync(req.Url);
+                }
+
+                generatedSlug = fetchedLink!.Slug;
             }
             catch
             {
