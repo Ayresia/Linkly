@@ -26,7 +26,7 @@ export const onClicked = async (event: MouseEvent<HTMLButtonElement>, setError: 
         setError("")
         setSlug(`${location.href}${resp.slug}`);
     } catch (e) {
-        if (e == undefined || e.data.trim().length == 0) {
+        if (e == undefined) {
             setError("Internal server error");
             return;
         }
