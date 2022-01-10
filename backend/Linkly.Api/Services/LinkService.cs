@@ -27,7 +27,7 @@ namespace Linkly.Api.Services
 
                 if (fetchedLink != null)
                     await redisDB.StringSetAsync($"links:{fetchedLink.Slug}", fetchedLink.Url, TimeSpan.FromMinutes(5));
-                    return fetchedLink;
+                    return fetchedLink!;
             }
 
 
