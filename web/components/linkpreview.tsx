@@ -23,7 +23,7 @@ export default function LinkPreview(props: LinkPreviewProps) {
                 onClick={() => navigator.clipboard.writeText(props.link)}
                 className="h-[20px] w-[20px] focus:outline-none"
             >
-                    <Image height="20px" width="20px" src="/assets/copy-icon.svg"/>
+                    <Image alt="Copy button" height="20px" width="20px" src="/assets/copy-icon.svg"/>
             </button>
         </div>
     );
