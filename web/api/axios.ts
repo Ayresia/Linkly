@@ -10,7 +10,7 @@ const httpsAgent = new https.Agent({
 
 const axiosInstance = axios.create({
     baseURL: publicRuntimeConfig.backendURL,
-    timeout: 1000,
+    timeout: 5000,
     headers: { 'Content-Type': 'application/json' },
     httpsAgent: httpsAgent
 });
