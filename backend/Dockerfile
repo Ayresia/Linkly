@@ -5,7 +5,7 @@ COPY Linkly.Api/*.csproj .
 RUN dotnet restore
 
 COPY Linkly.Api/. .
-RUN dotnet publish -c release -o /app --no-restore
+RUN dotnet publish -c release -o /app --no-restore --no-cache /restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
