@@ -78,10 +78,19 @@ namespace Linkly.Api.Controllers
                 var fetchedLink = _service.GetByUrl(sanitizedUrl);
 
                 if (fetchedLink == null) {
-                    generatedSlug = await _service.CreateUniqueSlugAsync(req.Url);
+                    generatedSlug = await _service.CreateUniqueSlugAsync(sanitizedUrl);
+                } else {
+                    generatedSlug = fetchedLink!.Slug;
                 }
 
-                generatedSlug = fetchedLink!.Slug;
+                return StatusCode
+                (
+                    StatusCodes.Status201Created,
+                    new ShortenUrlResponse
+                    { 
+                        Slug = generatedSlug
+                    }
+                );
             }
             catch
             {
@@ -91,15 +100,6 @@ namespace Linkly.Api.Controllers
                     new ErrorResponse(500, "An error has occured, please try again later.")
                 );
             }
-
-            return StatusCode
-            (
-                StatusCodes.Status201Created,
-                new ShortenUrlResponse
-                { 
-                    Slug = generatedSlug
-                }
-            );
         }
     }
 }
