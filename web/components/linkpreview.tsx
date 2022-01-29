@@ -18,7 +18,7 @@ export default function LinkPreview(props: LinkPreviewProps) {
                 ${props.className}
             `} 
         >
-            <p className="input-color">{props.link}</p>
+            <p className="input-color overflow-x-auto w-[89%]">{props.link}</p>
             <button 
                 onClick={() => navigator.clipboard.writeText(props.link)}
                 className="h-[20px] w-[20px] focus:outline-none"
