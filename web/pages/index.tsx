@@ -5,22 +5,24 @@ import LinkPreview from '@components/linkpreview';
 import { shortenUrl } from '@api/services/link';
 import { Dispatch, MouseEvent, SetStateAction, useState } from 'react';
 
-export const onClicked = async (event: MouseEvent<HTMLButtonElement>, setError: Dispatch<SetStateAction<string>>, setSlug: Dispatch<SetStateAction<string>>, url: string) => {
+export const onClicked = async (
+    event: MouseEvent<HTMLButtonElement>, 
+    setError: Dispatch<SetStateAction<string>>,
+    setSlug: Dispatch<SetStateAction<string>>,
+    setSubmitted: Dispatch<SetStateAction<boolean>>,
+    url: string
+) => {
     event.preventDefault();
-
-    if (url.trim().length == 0) {
-        setError("Enter a valid URL");
-        return;
-    }
 
     let pattern = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
 
-    if (!url.match(pattern)) {
+    if (url.trim().length == 0 || !url.match(pattern)) {
         setError("Enter a valid URL");
         return;
     }
 
     try {
+        setSubmitted(true);
         let resp = await shortenUrl(url);
 
         setError("")
@@ -30,12 +32,15 @@ export const onClicked = async (event: MouseEvent<HTMLButtonElement>, setError: 
             setError("Internal server error");
             return;
         }
+    } finally {
+        setSubmitted(false);
     }
 };
 
 export default function Index() {
     const [url, setURL] = useState<string>("");
     const [error, setError] = useState<string>("");
+    const [submitted, setSubmitted] = useState<boolean>(false);
     const [slug, setSlug] = useState<string>();
 
     return (
@@ -47,11 +52,13 @@ export default function Index() {
                 <div className="flex flex-col sm:flex-row gap-[25px] sm:gap-0">
                     <InputBox 
                         onChange={e => setURL(e.target.value)}
+                        disabled={submitted}
                         className="rounded-[25px] sm:rounded-none sm:rounded-tl-[25px] sm:rounded-bl-[25px] flex-grow"
                         placeholder="https://example.com"
                     />
                     <Button
-                        onClick={(e: MouseEvent<HTMLButtonElement>) => onClicked(e, setError, setSlug, url)}
+                        onClick={(e: MouseEvent<HTMLButtonElement>) => onClicked(e, setError, setSlug, setSubmitted, url)}
+                        disabled={submitted}
                         className="rounded-[25px] sm:rounded-none sm:rounded-tr-[25px] sm:rounded-br-[25px]">Shorten
                     </Button>
                 </div>
