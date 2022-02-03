@@ -14,6 +14,9 @@ export const onClicked = async (
 ) => {
     event.preventDefault();
 
+    setSlug("");
+    setError("");
+
     let pattern = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
 
     if (url.trim().length == 0 || !url.match(pattern)) {
@@ -34,6 +37,7 @@ export const onClicked = async (
         }
     } finally {
         setSubmitted(false);
+        setError(null);
     }
 };
 

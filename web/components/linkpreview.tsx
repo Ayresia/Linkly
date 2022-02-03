@@ -15,6 +15,7 @@ export default function LinkPreview(props: LinkPreviewProps) {
                 px-[25px]
                 py-[15px]
                 rounded-[25px]
+                animate-fade-in-down
                 ${props.className}
             `} 
         >
