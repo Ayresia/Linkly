@@ -70,7 +70,7 @@ namespace Linkly.Api.Services
 
         public bool IsUrlValid(string url)
         {
-            string pattern = @"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$";
+            string pattern = @"^(https?:\/\/)?([\w\d-_]+)\.([\w\d-_\.]+)\/?\??([^#\n\r]*)?#?([^\n\r]*)";
 
             Regex rgx = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
             return rgx.IsMatch(url);

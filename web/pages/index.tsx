@@ -17,7 +17,7 @@ export const onClicked = async (
     setSlug("");
     setError("");
 
-    let pattern = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+    let pattern = /^(https?:\/\/)?([\w\d-_]+)\.([\w\d-_\.]+)\/?\??([^#\n\r]*)?#?([^\n\r]*)/gm;
 
     if (url.trim().length == 0 || !url.match(pattern)) {
         setError("Enter a valid URL");
