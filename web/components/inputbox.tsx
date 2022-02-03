@@ -1,11 +1,4 @@
-import { ChangeEventHandler } from "react";
-
-interface InputBoxProps {
-    className?: string,
-    placeholder: string,
-    disabled: boolean,
-    onChange: ChangeEventHandler<HTMLInputElement>
-}
+import { InputBoxProps } from "@types";
 
 export default function InputBox(props: InputBoxProps) {
     return (

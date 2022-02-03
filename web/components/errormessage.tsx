@@ -1,10 +1,5 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-
-interface ErrorMessageProps {
-    className?: string,
-    error: string,
-    setError: Dispatch<SetStateAction<string>>
-}
+import { ErrorMessageProps } from "@types";
+import { useEffect, useState } from "react";
 
 export default function ErrorMessage(props: ErrorMessageProps) {
     const [fadeOut, setFadeOut] = useState<boolean>(false);

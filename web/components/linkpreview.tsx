@@ -1,9 +1,5 @@
+import { LinkPreviewProps } from '@types';
 import Image from 'next/image';
-
-interface LinkPreviewProps {
-    className?: string,
-    link: string
-}
 
 export default function LinkPreview(props: LinkPreviewProps) {
     return (

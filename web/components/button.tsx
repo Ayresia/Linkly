@@ -1,12 +1,5 @@
-import { MouseEventHandler } from "react";
+import { ButtonProps } from "@types";
 import { Loading } from "./loading";
-
-interface ButtonProps {
-    className?: string,
-    children: string,
-    disabled: boolean,
-    onClick?: MouseEventHandler<Element>
-}
 
 export default function Button(props: ButtonProps) {
     return (
