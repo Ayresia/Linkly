@@ -26,11 +26,14 @@ namespace Linkly.Api.Controllers
         {
             try 
             {
-                if (slug.Length != 5)
+                if (slug.Length != 5) {
+                    _logger.LogInformation($"SlugInfo - {slug} is too short.");
                     return BadRequest(new ErrorResponse(400, "Provide a valid slug."));
+                }
 
                 Link fetchedSlug = await _service.GetBySlugAsync(slug);
-                
+                _logger.LogInformation($"SlugInfo - {slug} {fetchedSlug.Url}");
+
                 return Ok(
                     new SlugInfoResponse
                     {
@@ -40,10 +43,13 @@ namespace Linkly.Api.Controllers
             }
             catch (NullReferenceException)
             {
+                _logger.LogError("SlugInfo - {slug} does not exist.");
                 return BadRequest(new ErrorResponse(400, "The slug entered does not exist."));
             }
             catch
             {
+                _logger.LogError("SlugInfo - Internal server error.");
+
                 return StatusCode
                 (
                     StatusCodes.Status500InternalServerError,
@@ -61,14 +67,21 @@ namespace Linkly.Api.Controllers
         public async Task<ActionResult<ShortenUrlResponse>> ShortenUrl(ShortenUrlRequest req)
         {
             if (String.IsNullOrEmpty(req.Url))
+            {
+                _logger.LogError("ShortenUrl - No url has been provided.");
                 return BadRequest(new ErrorResponse(400, "Provide a valid URL."));
+            }
 
             if (req.Url.Length > 2048)
+            {
+                _logger.LogError("ShortenUrl - URL too large.");
                 return BadRequest(new ErrorResponse(400, "The URL length must be less than 2048."));
+            }
 
-            if (!_service.IsUrlValid(req.Url))
+            if (!_service.IsUrlValid(req.Url)) {
+                _logger.LogError("ShortenUrl - URL is not valid.");
                 return BadRequest(new ErrorResponse(400, "Provide a valid URL."));
-
+            }
 
             string sanitizedUrl = _service.SanitizeUrl(req.Url);
             string generatedSlug;
@@ -83,6 +96,8 @@ namespace Linkly.Api.Controllers
                     generatedSlug = fetchedLink!.Slug;
                 }
 
+                _logger.LogInformation($"ShortenUrl - Slug {generatedSlug} has been generated.");
+
                 return StatusCode
                 (
                     StatusCodes.Status201Created,
@@ -94,6 +109,8 @@ namespace Linkly.Api.Controllers
             }
             catch
             {
+                _logger.LogError("ShortenUrl - Internal server error.");
+
                 return StatusCode
                 (
                     StatusCodes.Status500InternalServerError,
