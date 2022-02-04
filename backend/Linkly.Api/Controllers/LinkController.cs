@@ -43,7 +43,7 @@ namespace Linkly.Api.Controllers
             }
             catch (NullReferenceException)
             {
-                _logger.LogError("SlugInfo - {slug} does not exist.");
+                _logger.LogError($"SlugInfo - {slug} does not exist.");
                 return BadRequest(new ErrorResponse(400, "The slug entered does not exist."));
             }
             catch
